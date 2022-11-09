@@ -30,10 +30,13 @@ const run = async () => {
 		const serviceCollection = client.db("binaryBuaDB").collection("services");
 
 		// Get all services from DB
+		// limit data with query: items
+		// ex: /services?items=3
 		app.get("/services", async (req, res) => {
+			const items = parseInt(req.query.items);
 			const query = {};
 			const cursor = serviceCollection.find(query);
-			const services = await cursor.toArray();
+			const services = await cursor.limit(items).toArray();
 			res.send(services);
 		});
 	} finally {
