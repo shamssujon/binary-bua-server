@@ -47,6 +47,13 @@ const run = async () => {
 			const service = await serviceCollection.findOne(query);
 			res.send(service);
 		});
+
+		// Get a service from client, send to DB
+		app.post("/services/service/add", async (req, res) => {
+			const service = req.body;
+			const result = await serviceCollection.insertOne(service);
+			res.send(result);
+		});
 	} finally {
 	}
 };
