@@ -34,7 +34,14 @@ const run = async () => {
 		// ex: /services?items=3
 		app.get("/services", async (req, res) => {
 			const items = parseInt(req.query.items);
-			const query = {};
+			let query = {};
+
+            // Load user specific orders with email query
+            const email = req.query.email;
+            if (email) {
+                query = { customerEmail: email };
+            }
+
 			const cursor = serviceCollection.find(query);
 			const services = await cursor.limit(items).toArray();
 			res.send(services);
@@ -51,6 +58,7 @@ const run = async () => {
 		// Get a service from client, send to DB
 		app.post("/services/service/add", async (req, res) => {
 			const service = req.body;
+			service.dateAdded = new Date();
 			const result = await serviceCollection.insertOne(service);
 			res.send(result);
 		});
