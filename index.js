@@ -79,16 +79,30 @@ const run = async () => {
 			const items = parseInt(req.query.limit);
 			let query = {};
 
-			// Load user specific reviews with service id query
+			// Load service specific reviews with service id query
 			const id = req.query.id;
 			if (id) {
 				query = { serviceId: id };
+			}
+
+			// Load user specific reviews with email query
+			const email = req.query.email;
+			if (email) {
+				query = { reviewerEmail: email };
 			}
 
 			const cursor = reviewCollection.find(query);
 			const reviews = await cursor.limit(items).toArray();
 			res.send(reviews);
 		});
+
+		// Delete a review from DB
+        app.delete("/reviews/:id", async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await reviewCollection.deleteOne(query);
+            res.send(result);
+        });
 
 		// Load Blogs from DB
 		app.get("/blogs", async (req, res) => {
