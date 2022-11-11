@@ -73,7 +73,9 @@ const run = async () => {
 		});
 
 		// Load all reviews
+		// limit data with query: limit
 		app.get("/reviews", async (req, res) => {
+			const items = parseInt(req.query.limit);
 			let query = {};
 
 			// Load user specific reviews with service id query
@@ -83,7 +85,7 @@ const run = async () => {
 			}
 
 			const cursor = reviewCollection.find(query);
-			const reviews = await cursor.toArray();
+			const reviews = await cursor.limit(items).toArray();
 			res.send(reviews);
 		});
 	} finally {
