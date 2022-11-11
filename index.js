@@ -29,6 +29,7 @@ const run = async () => {
 	try {
 		const serviceCollection = client.db("binaryBuaDB").collection("services");
 		const reviewCollection = client.db("binaryBuaDB").collection("reviews");
+		const blogCollection = client.db("binaryBuaDB").collection("blogs");
 
 		// Get all services from DB
 		// limit data with query: items
@@ -87,6 +88,14 @@ const run = async () => {
 			const cursor = reviewCollection.find(query);
 			const reviews = await cursor.limit(items).toArray();
 			res.send(reviews);
+		});
+
+		// Load Blogs from DB
+		app.get("/blogs", async (req, res) => {
+			const query = {};
+			const cursor = blogCollection.find(query);
+			const blogs = await cursor.toArray();
+			res.send(blogs);
 		});
 	} finally {
 	}
