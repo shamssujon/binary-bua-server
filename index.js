@@ -28,6 +28,7 @@ const client = new MongoClient(uri, {
 const run = async () => {
 	try {
 		const serviceCollection = client.db("binaryBuaDB").collection("services");
+		const reviewCollection = client.db("binaryBuaDB").collection("reviews");
 
 		// Get all services from DB
 		// limit data with query: items
@@ -36,11 +37,11 @@ const run = async () => {
 			const items = parseInt(req.query.items);
 			let query = {};
 
-            // Load user specific orders with email query
-            const email = req.query.email;
-            if (email) {
-                query = { customerEmail: email };
-            }
+			// Load user specific orders with email query
+			const email = req.query.email;
+			if (email) {
+				query = { customerEmail: email };
+			}
 
 			const cursor = serviceCollection.find(query);
 			const services = await cursor.limit(items).toArray();
@@ -60,6 +61,14 @@ const run = async () => {
 			const service = req.body;
 			service.dateAdded = new Date();
 			const result = await serviceCollection.insertOne(service);
+			res.send(result);
+		});
+
+		// Get review from client, send to DB
+		app.post("/review/add", async (req, res) => {
+			const review = req.body;
+			review.dateAdded = new Date();
+			const result = await reviewCollection.insertOne(review);
 			res.send(result);
 		});
 	} finally {
