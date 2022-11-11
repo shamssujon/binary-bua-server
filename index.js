@@ -37,7 +37,7 @@ const run = async () => {
 			const items = parseInt(req.query.items);
 			let query = {};
 
-			// Load user specific orders with email query
+			// Load user specific services with email query
 			const email = req.query.email;
 			if (email) {
 				query = { customerEmail: email };
@@ -70,6 +70,21 @@ const run = async () => {
 			review.dateAdded = new Date();
 			const result = await reviewCollection.insertOne(review);
 			res.send(result);
+		});
+
+		// Load all reviews
+		app.get("/reviews", async (req, res) => {
+			let query = {};
+
+			// Load user specific reviews with service id query
+			const id = req.query.id;
+			if (id) {
+				query = { serviceId: id };
+			}
+
+			const cursor = reviewCollection.find(query);
+			const reviews = await cursor.toArray();
+			res.send(reviews);
 		});
 	} finally {
 	}
